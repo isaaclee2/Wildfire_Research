@@ -124,18 +124,22 @@ def expand_tensor(tensor, n):
 
 # %% ### Load Data ###
 data = torch.from_numpy(np.load("/project/aoberai_286/ihlee/fire_area_prediction/training_testing_data_for_predicting_fire_area_from_ign_time_conditions.npy")).float()
+data_test_real = torch.from_numpy(np.load("/project/aoberai_286/ihlee/fire_area_prediction/Barnes_Eaton_Oak_Palisades_fire_area_pred_from_IC_test_cases_fixed.npy")).float()
 
 N = data.shape[0]
 dim = data.shape[1]
 
 train_data = data[:int(140/152*N)]
 test_data = data[int(140/152*N):]
-b_size = 2000 # original: 2000
+test_data_real = data_test_real
+b_size = 2000 
 b_size_test = 10
 train_dataset = CustomDataset(train_data)
 test_dataset = CustomDataset(test_data)
+test_dataset_real = CustomDataset(test_data_real)
 train_dataloader = DataLoader(train_dataset, batch_size=b_size, shuffle=True)
 test_dataloader = DataLoader(test_dataset, batch_size=b_size_test, shuffle=False)
+test_dataloader_real = DataLoader(test_dataset_real, batch_size=b_size_test, shuffle=False)
 
 
 # %% ### Train ###
@@ -146,7 +150,7 @@ torch.cuda.manual_seed(0)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
-n_epochs = 10000 # original: 10000
+n_epochs = 10000
 lr = 1e-3
 sigma_max = 5.0
 sigma_min = 0.001
@@ -165,7 +169,7 @@ optimizer = torch.optim.Adam(score_net.parameters(), lr=lr, betas=(0.9, 0.999), 
 schedule = VE(sigma_max=sigma_max, sigma_min=sigma_min)
 
 expname = 'depth_'+str(depth)+'_epochs_'+str(n_epochs)+'_schedule_'+ schedule.__class__.__name__ + '_sigma_' + str(int(sigma_max))
-path_to_run = '/project/aoberai_286/ihlee/fire_area_prediction/wildfire_results/' + expname + '/'
+path_to_run = '/project/aoberai_286/ihlee/fire_area_prediction/wildfire_results_real/' + expname + '/'
 
 if os.path.exists(path_to_run):
     shutil.rmtree(path_to_run)
@@ -201,10 +205,9 @@ batch_size = 1000
 generated_samples_list =[]
 conditional_inputs_list = []
 
-for X in test_dataloader:
+for X in test_dataloader_real:
     latents = torch.randn(batch_size*X.shape[0], x_dim)
     y = X[:,x_dim:]
-    #y[:,0] = 12/50 
     y_tensor = expand_tensor(y,batch_size)
     
     samples_t, samples_x = odeint_sampler(score_net, y_tensor, schedule, latents, batch_size*X.shape[0], device)
@@ -225,7 +228,7 @@ np.savez(path_to_run + 'conditional_inputs.npz', conditional_inputs)
 print("size of the generated samples tensor:")
 print(generated_samples.shape) 
 
-real_samples = test_data[:,:x_dim].numpy()
+real_samples = test_data_real[:,:x_dim].numpy()
 x_mean = np.zeros([real_samples.shape[0],x_dim])
 x_std = np.zeros([real_samples.shape[0],x_dim])
 
