@@ -146,7 +146,7 @@ torch.cuda.manual_seed(0)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
-n_epochs = 10000 # original: 10000
+n_epochs = 1 # original: 10000
 lr = 1e-3
 sigma_max = 5.0
 sigma_min = 0.001
@@ -196,7 +196,7 @@ states = [score_net.state_dict(),score_ema.state_dict(), optimizer.state_dict(),
 torch.save(states, path_to_run+'checkpoints/'+'checkpoint.pth')
 
 # %% ### Sampling ###
-batch_size = 1000
+batch_size = 1
 
 generated_samples_list =[]
 conditional_inputs_list = []
@@ -206,6 +206,7 @@ for X in test_dataloader:
     y = X[:,x_dim:]
     #y[:,0] = 12/50 
     y_tensor = expand_tensor(y,batch_size)
+    print(y_tensor.shape)
     
     samples_t, samples_x = odeint_sampler(score_net, y_tensor, schedule, latents, batch_size*X.shape[0], device)
     lat_shape = [batch_size*X.shape[0], x_dim, len(samples_t)]

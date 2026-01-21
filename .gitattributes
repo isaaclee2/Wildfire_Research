@@ -1,3 +1,4 @@
 *.npy filter=lfs diff=lfs merge=lfs -text
 *.pth filter=lfs diff=lfs merge=lfs -text
 *.npz filter=lfs diff=lfs merge=lfs -text
+validation_case_data_and_preparation/wrfout_files/** filter=lfs diff=lfs merge=lfs -text

@@ -123,10 +123,8 @@ def expand_tensor(tensor, n):
 
 
 # %% ### Load Data ###
-train_data = torch.from_numpy(np.load("/project/aoberai_286/ihlee/")).float()
-test_data = ...
-
-# data train and test
+train_data = torch.from_numpy(np.load("/project/aoberai_286/ihlee/Wildfire_Research/data/recursive_train_data_norm.npy")).float()
+test_data = torch.from_numpy(np.load("/project/aoberai_286/ihlee/Wildfire_Research/data/recursive_test_data_norm.npy")).float()
 
 # N = data.shape[0]
 # dim = data.shape[1]
@@ -149,7 +147,7 @@ torch.backends.cudnn.benchmark = False
 
 n_epochs = 10000 # original: 10000
 lr = 1e-3
-sigma_max = 5.0 # max euclidean distance, round up by 0.5
+sigma_max = 2.0 # max euclidean distance, round up by 0.5
 sigma_min = 0.001
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
