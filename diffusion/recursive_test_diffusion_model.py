@@ -123,8 +123,9 @@ def expand_tensor(tensor, n):
 
 
 # %% ### Load Data ###
-train_data = torch.from_numpy(np.load("/project/aoberai_286/ihlee/Wildfire_Research/data/recursive_train_data_norm.npy")).float()
-test_data = torch.from_numpy(np.load("/project/aoberai_286/ihlee/Wildfire_Research/data/recursive_test_data_norm.npy")).float()
+train_data = torch.from_numpy(np.load("/project2/aoberai_286/ihlee/Wildfire_Research/data/recursive_train_data_norm.npy")).float()
+#test_data = torch.from_numpy(np.load("/project2/aoberai_286/ihlee/Wildfire_Research/data/recursive_test_data_norm.npy")).float()
+test_data = torch.from_numpy(np.load("/project2/aoberai_286/ihlee/Wildfire_Research/data/sensitivity_data.npy")).float()
 
 # N = data.shape[0]
 # dim = data.shape[1]
@@ -145,7 +146,7 @@ torch.cuda.manual_seed(0)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
-n_epochs = 10000 # original: 10000
+n_epochs = 20000 # original: 10000
 lr = 1e-3
 sigma_max = 2.0 # max euclidean distance, round up by 0.5
 sigma_min = 0.001
@@ -154,7 +155,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print(device)
 
 width = 256 
-depth = 4
+depth = 8 # originally 4
 x_dim = 3    
 y_dim = 24
 score_net = score_edm(device=device, x_dim=x_dim, y_dim=y_dim, width=width, depth=depth, activation=nn.ReLU)
@@ -163,7 +164,7 @@ optimizer = torch.optim.Adam(score_net.parameters(), lr=lr, betas=(0.9, 0.999), 
 schedule = VE(sigma_max=sigma_max, sigma_min=sigma_min)
 
 expname = 'depth_'+str(depth)+'_epochs_'+str(n_epochs)+'_schedule_'+ schedule.__class__.__name__ + '_sigma_' + str(int(sigma_max))
-path_to_run = '/project/aoberai_286/ihlee/Wildfire_Research/recursive_wildfire_results/' + expname + '/'
+path_to_run = '/project2/aoberai_286/ihlee/Wildfire_Research/sensitivity_deep_wildfire_results/' + expname + '/'
 
 if os.path.exists(path_to_run):
     shutil.rmtree(path_to_run)

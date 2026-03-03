@@ -20,14 +20,18 @@
 % Fuel categories (categorical values from 1-14); for each category consider total number of pixels with that fuel category; when doing rotations for data augmentation threshold pixel values at 0.5; normalize by dividing by 90000 (i.e., 300*300 which is total number of pixels)
 clear; close all; clc;
 
-% wrfout_file = '/Users/bshaddy/CD3_lab_stuff/wildfire_research/wrf-sfire_training_data_w_terrain/predict_fire_area_from_ign_time_conditions_(Isaac)/validation_case_data_and_preparation/wrfout_files/Horse/wrfout_d01_2025-07-04_09:00:00';
-wrfout_file = '/Users/isaaclee/Wildfire_Research/validation_case_data_and_preparation/wrfout_files/Horse/wrfout_d01_2025-07-04_09:00:00';
-% met_em_dir = '/Users/bshaddy/CD3_lab_stuff/wildfire_research/wrf-sfire_training_data_w_terrain/predict_fire_area_from_ign_time_conditions_(Isaac)/validation_case_data_and_preparation/met_em_data/Horse';
-met_em_dir = '/Users/isaaclee/Wildfire_Research/validation_case_data_and_preparation/met_em_data/Horse';
+% wrfout_file = '/Users/isaaclee/Wildfire_Research/validation_case_data_and_preparation/wrfout_files/Horse/wrfout_d01_2025-07-04_09:00:00';
+% met_em_dir = '/Users/isaaclee/Wildfire_Research/validation_case_data_and_preparation/met_em_data/Horse';
+
+% wrfout_file = '/Users/isaaclee/Downloads/validation_case_data_and_preparation/wrfout_files/Root/wrfout_d01_2025-09-03_09:00:00';
+% met_em_dir =  '/Users/isaaclee/Downloads/validation_case_data_and_preparation/met_em_data/Root';
+
+wrfout_file = '/Users/isaaclee/Downloads/data_for_testing_cases/wrfout_test_data_cases/UTILITY.nc';
+met_em_dir =  '/Users/isaaclee/Downloads/data_for_testing_cases/met_em_files_test_data_cases/UTILITY_met_em';
 
 % sample params 
 dT = 3;                % prediction timestep in hours
-max_forecast = 36;     % maximum forecast length
+max_forecast = 24;     % maximum forecast length
 
 data_vec = zeros(max_forecast/dT-1,27);    % N x (length(x) + length(y))
 
@@ -232,9 +236,7 @@ for forecast_T = forecast_times
 end 
 
 % save
-save("/Users/isaaclee/Wildfire_Research/validation_case_data_and_preparation/validation_case_data.mat",'data_vec');
-% import py.numpy
-% py.numpy.save("/Users/bshaddy/CD3_lab_stuff/wildfire_research/wrf-sfire_training_data_w_terrain/predict_fire_area_from_ign_time_conditions_(Isaac)/validation_case_data_and_preparation/validation_case_data.npy",data_vec);
+save("/Users/isaaclee/Wildfire_Research/validation_case_data_and_preparation/UTILITY_validation_case_data.mat",'data_vec');
 
 
 %% Functions 

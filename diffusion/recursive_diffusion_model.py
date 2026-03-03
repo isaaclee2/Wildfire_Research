@@ -123,17 +123,17 @@ def expand_tensor(tensor, n):
     return expanded_tensor
 
 def undo_normalization(final_samples):
-    x1_min = np.load('/Users/isaaclee/Wildfire_Research/recursive_data/recursive_x1_min.npy')
-    x2_min = np.load('/Users/isaaclee/Wildfire_Research/recursive_data/recursive_x2_min.npy')
-    x3_min = np.load('/Users/isaaclee/Wildfire_Research/recursive_data/recursive_x3_min.npy')
+    x1_min = np.load('/project2/aoberai_286/ihlee/Wildfire_Research/recursive_data/recursive_x1_min.npy')
+    x2_min = np.load('/project2/aoberai_286/ihlee/Wildfire_Research/recursive_data/recursive_x2_min.npy')
+    x3_min = np.load('/project2/aoberai_286/ihlee/Wildfire_Research/recursive_data/recursive_x3_min.npy')
 
-    x1_max = np.load('/Users/isaaclee/Wildfire_Research/recursive_data/recursive_x1_max.npy')
-    x2_max = np.load('/Users/isaaclee/Wildfire_Research/recursive_data/recursive_x2_max.npy')
-    x3_max = np.load('/Users/isaaclee/Wildfire_Research/recursive_data/recursive_x3_max.npy')
+    x1_max = np.load('/project2/aoberai_286/ihlee/Wildfire_Research/recursive_data/recursive_x1_max.npy')
+    x2_max = np.load('/project2/aoberai_286/ihlee/Wildfire_Research/recursive_data/recursive_x2_max.npy')
+    x3_max = np.load('/project2/aoberai_286/ihlee/Wildfire_Research/recursive_data/recursive_x3_max.npy')
 
-    x1_first_max = np.load('/Users/isaaclee/Wildfire_Research/recursive_data/first_x1_max.npy')
-    x2_first_max = np.load('/Users/isaaclee/Wildfire_Research/recursive_data/first_x2_max.npy')
-    x3_first_max = np.load('/Users/isaaclee/Wildfire_Research/recursive_data/first_x3_max.npy')
+    x1_first_max = np.load('/project2/aoberai_286/ihlee/Wildfire_Research/recursive_data/first_x1_max.npy')
+    x2_first_max = np.load('/project2/aoberai_286/ihlee/Wildfire_Research/recursive_data/first_x2_max.npy')
+    x3_first_max = np.load('/project2/aoberai_286/ihlee/Wildfire_Research/recursive_data/first_x3_max.npy')
 
     x1_pred = final_samples[:,0]
     x2_pred = final_samples[:,1]
@@ -151,7 +151,7 @@ def undo_normalization(final_samples):
 
 # %% ### Load Data ###
 train_data = torch.from_numpy(np.load("/project2/aoberai_286/ihlee/Wildfire_Research/data/recursive_train_data_norm.npy")).float()
-test_data = torch.from_numpy(np.load("/project2/aoberai_286/ihlee/Wildfire_Research/data/validation_case_data.npy")).float()
+test_data  = torch.from_numpy(np.load("/project2/aoberai_286/ihlee/Wildfire_Research/data/root_validation_case_data.npy")).float()
 
 # N = data.shape[0]
 # dim = data.shape[1]
@@ -190,7 +190,7 @@ optimizer = torch.optim.Adam(score_net.parameters(), lr=lr, betas=(0.9, 0.999), 
 schedule = VE(sigma_max=sigma_max, sigma_min=sigma_min)
 
 expname = 'depth_'+str(depth)+'_epochs_'+str(n_epochs)+'_schedule_'+ schedule.__class__.__name__ + '_sigma_' + str(int(sigma_max))
-path_to_run = '/project2/aoberai_286/ihlee/Wildfire_Research/recursive_validation_wildfire_results/' + expname + '/'
+path_to_run = '/project2/aoberai_286/ihlee/Wildfire_Research/recursive_wildfire_results/' + expname + '/'
 
 if os.path.exists(path_to_run):
     shutil.rmtree(path_to_run)
@@ -222,7 +222,8 @@ torch.save(states, path_to_run+'checkpoints/'+'checkpoint.pth')
 
 # %% ### Sampling ###
 
-condition_matrix = np.load("/project2/aoberai_286/ihlee/Wildfire_Research/data/validation_case_data.npy") # time series data per fire
+#condition_matrix = np.load("/project2/aoberai_286/ihlee/Wildfire_Research/data/validation_case_data.npy") # time series data per fire
+condition_matrix = np.load("/project2/aoberai_286/ihlee/Wildfire_Research/data/root_validation_case_data.npy") # time series data per fire
 condition_matrix = condition_matrix[:, x_dim:]
 
 num_ensemble_members = 100
